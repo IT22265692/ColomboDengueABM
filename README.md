@@ -1,114 +1,392 @@
 # Colombo Dengue ABM
 
-An agent-based model of dengue transmission driven by human commuter mobility
-across the 13 Divisional Secretariat (DS) zones of Colombo District, Sri Lanka.
+An Agent-Based Model (ABM) developed in **AnyLogic 8.9.9 Personal Learning Edition** to investigate dengue transmission across the **13 Divisional Secretariat (DS) divisions of Colombo District, Sri Lanka**.
 
-Built for AM 4086 / AM 4039 / FM 4054 (Agent-Based Modeling), Semester I 2026,
-Group 6, University of Colombo.
+This project evaluates how **human commuter mobility** and **historical weather conditions** influence dengue transmission using Monte Carlo simulation and parameter variation experiments.
 
-## Research Questions
+Developed for:
 
-1. Does representing daily commuting produce a materially different spatial
-   pattern of dengue transmission compared to a model where everyone stays
-   in their home zone?
-2. Do weather conditions alone explain the difference in outbreak size
-   between an epidemic year (2017) and a typical year (2019)?
+**AM 4086 / AM 4039 / FM 4054 – Agent-Based Modeling**
 
-## Repository Structure
+Department of Mathematics
+
+University of Colombo
+
+Semester I – 2026
+
+Group 6
+
+---
+
+# Research Questions
+
+This study addresses the following research questions:
+
+### RQ1
+
+**Does representing daily commuting produce a materially different spatial pattern of dengue transmission compared to a model where everyone remains in their home zone?**
+
+### RQ2
+
+**Do weather conditions alone explain the difference in outbreak size between an epidemic year (2017) and a typical year (2019)?**
+
+---
+
+# Repository Structure
 
 ```
-.
-├── anylogic_model/
-│   └── ColomboDengueABM_v2.alp        # AnyLogic 8.9.9 model file
-├── data/
-│   ├── population.csv                  # 2024 census population per DS zone
-│   ├── weather_cleaned.csv             # ERA5-derived daily temp/rainfall, 2015-2025
-│   ├── colombo_ds.shp (+ .dbf/.shx/.prj) # DS zone boundary shapefile
-│   └── colombo_dengue_weekly_2015_2025.csv  # Real MoH weekly case counts (validation)
-├── results/
-│   ├── MonteCarloResults.csv           # Baseline experiment output (50 reps)
-│   ├── WeatherExperimentResults.csv    # 2017 vs 2019 weather sweep (10 reps each)
-│   └── Final_Combined_ParamVar_Results.xlsx  # Commuting share sweep (0/20/37.8/50%)
-├── scripts/
-│   ├── analysis.py                     # Statistical analysis (t-tests, correlations, CIs)
-│   └── make_figures.py                 # Generates all 9 figures used in the report
-├── figures/
-│   └── fig1_baseline_histogram.png ... fig9_scale_comparison.png
-├── report/
-│   └── Group06_Assignment8_SIURO.tex   # Final report (SIURO journal template)
-│   └── Group06_Assignment8_SIURO.pdf
-└── README.md
+ColomboDengueABM_v2/
+│
+├── anylogic_model/          # AnyLogic project files
+├── al_internal/             # AnyLogic internal project files
+├── cache/                   # AnyLogic cache
+├── data/                    # Population, weather and validation datasets
+├── database/                # SQLite database used by the model
+├── figures/                 # Figures generated for the report
+├── results/                 # CSV/XLSX outputs from simulation experiments
+├── scripts/                 # Python scripts for analysis and plotting
+│
+├── README.md
+│
+├── db_backup_*.zip          # Automatic AnyLogic database backups
+└── hs_err_pid*.log          # Java crash logs (can be ignored)
 ```
 
-## How to Reproduce the Results
+---
 
-### 1. Run the AnyLogic model
+# Software Requirements
 
-- Requires AnyLogic 8.9.9 Personal Learning Edition (free): https://www.anylogic.com/downloads/
-- Open `anylogic_model/ColomboDengueABM_v2.alp`
-- Ensure `data/population.csv`, `data/weather_cleaned.csv`, and the shapefile
-  files are in the same folder as the `.alp` file
-- Run the `MonteCarlo_Baseline`, `ParamVar_CommutingShare`, and
-  `ParamVar_Weather` experiments from the Projects panel
-- Export each experiment's output table to CSV/XLSX into the `results/` folder
+The project requires:
 
-### 2. Run the statistical analysis
+- AnyLogic Personal Learning Edition 8.9.9
+- Java (included with AnyLogic)
+- Python 3.10 or later
+
+Python packages:
 
 ```bash
 pip install pandas numpy matplotlib scipy openpyxl
-python scripts/analysis.py       # prints all statistics used in the report
-python scripts/make_figures.py   # regenerates all 9 figures into figures/
 ```
 
-### 3. Compile the report
+---
 
-The report uses the SIAM SIURO journal template. Open `report/Group06_Assignment8_SIURO.tex`
-in Overleaf (or compile locally with `pdflatex`, run twice), with all files
-from `figures/` in the same directory as the `.tex` file.
+# Datasets
 
-## Key Findings
+The model uses the following datasets.
 
-- **Baseline stability:** 50 Monte Carlo replications, CV = 0.77%, confirming
-  the model's stochastic behaviour is stable and well-behaved.
-- **RQ1 (commuting):** Supported. Cross-zone coefficient of variation in
-  infections falls from 44.1% (0% commuting) to 15.2% (50% commuting),
-  r = -0.998, p = 0.002.
-- **RQ2 (weather):** Not supported. Model shows only a 0.61% difference
-  between 2017 and 2019 weather (t = 1.965, p = 0.065), versus a real
-  64% difference in Ministry of Health surveillance data.
+### Population
 
-## Known Limitations
+Population of each Colombo DS Division.
 
-- The commuting-share experiment's 10 nominal replications per scenario
-  produced identical results (SD = 0), indicating the AnyLogic random seed
-  was not configured for independent draws in that specific sweep. The
-  weather-year sweep did not have this issue.
-- Model output exceeds real case counts by approximately 100-fold, reflecting
-  both the inclusion of subclinical infections and unrecalibrated importation/
-  waning-immunity parameters.
-- The 37.8% commuting rate is a proxy from census employment-migration data,
-  not a direct daily-commuting statistic.
+```
+data/population.csv
+```
 
-See the report's Discussion and Limitations sections for full details.
+---
 
-## Data Sources
+### Weather
 
-- Population: 2024 Sri Lanka Population and Housing Census, Department of
-  Census and Statistics
-- Weather: Copernicus Climate Change Service, ERA5 reanalysis
-- Zone boundaries: Humanitarian Data Exchange (HDX), COD administrative
-  boundaries for Sri Lanka
-- Dengue case validation data: Ministry of Health Weekly Epidemiological
-  Reports, Sri Lanka
+Weekly temperature and rainfall observations.
 
-## Authors
+```
+data/weather_cleaned.csv
+```
 
-Nishara Laksara (s16836), Nanduni Sathsara (s16962),
-Tharushi Madushika (s16950), Madhubhashini Jayasinghe (s16985)
+---
 
-Department of Mathematics, University of Colombo
+### Administrative Boundaries
 
-## License
+Colombo District Divisional Secretariat boundary shapefiles.
 
-This repository is shared for academic evaluation purposes as part of a
-university course assignment.
+```
+data/*.shp
+data/*.dbf
+data/*.prj
+data/*.shx
+```
+
+---
+
+### Validation Dataset
+
+Weekly reported dengue cases for Colombo District.
+
+```
+data/colombo_dengue_weekly_2015_2025.csv
+```
+
+Used for model validation.
+
+---
+
+# Simulation Experiments
+
+Three simulation experiments were performed.
+
+## 1. MonteCarlo_Baseline
+
+Purpose:
+
+Evaluate stochastic variability of the model using repeated Monte Carlo simulations.
+
+Output:
+
+```
+results/MonteCarloResults.csv
+```
+
+---
+
+## 2. ParamVar_CommutingShare
+
+Research Question 1
+
+Commuting share was varied across four values.
+
+- 0%
+- 20%
+- 37.8%
+- 50%
+
+Ten independent replications were performed for each scenario.
+
+Outputs include
+
+- Total infections
+- Zone-level infections
+- Statistical comparisons
+
+Output:
+
+```
+results/Final_Combined_ParamVar_Results.xlsx
+```
+
+---
+
+## 3. ParamVar_Weather
+
+Research Question 2
+
+Weather conditions were fixed to either
+
+- 2017 (major epidemic year)
+
+or
+
+- 2019 (typical year)
+
+with
+
+```
+useSingleYearWeather = true
+```
+
+Ten independent replications were performed for each weather scenario.
+
+Output:
+
+```
+results/WeatherExperimentResults.csv
+```
+
+---
+
+# Running the Model
+
+Open
+
+```
+anylogic_model/
+```
+
+using
+
+```
+AnyLogic 8.9.9 Personal Learning Edition
+```
+
+Run the experiments
+
+- MonteCarlo_Baseline
+- ParamVar_CommutingShare
+- ParamVar_Weather
+
+Export the experiment outputs into
+
+```
+results/
+```
+
+---
+
+# Running the Analysis
+
+Navigate to
+
+```
+scripts/
+```
+
+and execute
+
+```bash
+python analysis.py
+```
+
+or
+
+```bash
+python make_figures.py
+```
+
+The scripts automatically
+
+- compute descriptive statistics
+- calculate confidence intervals
+- perform hypothesis tests
+- generate publication-quality figures
+
+Figures are saved into
+
+```
+figures/
+```
+
+---
+
+# Results Summary
+
+## Baseline Monte Carlo
+
+- 50 Monte Carlo replications
+- Stable stochastic behaviour
+- Very small coefficient of variation
+
+---
+
+## Research Question 1
+
+Human commuting significantly changes the **spatial distribution** of dengue transmission.
+
+Increasing commuter mobility
+
+- decreases infections in central Colombo
+- increases infections in suburban zones
+- redistributes transmission across DS divisions
+
+However,
+
+the **overall district-wide infection total remains statistically unchanged.**
+
+---
+
+## Research Question 2
+
+Weather conditions alone were **not sufficient** to explain the observed difference between the 2017 and 2019 dengue outbreaks.
+
+The model produced only a small difference between the two weather scenarios, whereas surveillance data showed a substantially larger epidemic during 2017.
+
+This suggests additional factors such as
+
+- viral serotype changes
+- imported infections
+- human behaviour
+- vector ecology
+
+likely contributed to the real outbreak.
+
+---
+
+# Validation
+
+Model predictions were compared against weekly dengue surveillance data obtained from the Sri Lanka Ministry of Health.
+
+Validation focused on
+
+- qualitative epidemic behaviour
+- relative differences between years
+- spatial transmission patterns
+
+rather than exact case counts.
+
+The comparison showed that
+
+- the commuting mechanism reproduced realistic spatial redistribution of infections;
+
+- the weather-only experiment did not reproduce the magnitude of the 2017 epidemic, indicating that weather alone is insufficient to explain observed outbreak severity.
+
+---
+
+# Figures
+
+The report figures are generated automatically and saved in
+
+```
+figures/
+```
+
+These include
+
+- Baseline histogram
+- Baseline boxplot
+- Monte Carlo convergence
+- Commuting-share comparison
+- Zone heatmap
+- Zone distribution
+- Weather comparison
+- Validation plots
+
+---
+
+# Data Sources
+
+Population
+
+- Department of Census and Statistics, Sri Lanka
+
+Weather
+
+- Copernicus Climate Change Service (ERA5)
+
+Administrative Boundaries
+
+- Humanitarian Data Exchange (HDX)
+
+Validation Data
+
+- Ministry of Health, Sri Lanka
+- Weekly Epidemiological Reports
+
+---
+
+# Authors
+
+**Group 6**
+
+Department of Mathematics
+
+University of Colombo
+
+- Nishara Laksara (s16836)
+- Nanduni Sathsara (s16962)
+- Tharushi Madushika (s16950)
+- Madhubhashini Jayasinghe (s16985)
+
+---
+
+# Citation
+
+If you use this repository for academic purposes, please cite:
+
+> Group 6 (2026). *Colombo Dengue ABM: An Agent-Based Model of Dengue Transmission Driven by Human Commuter Mobility and Weather Conditions in Colombo District, Sri Lanka.* Department of Mathematics, University of Colombo.
+
+---
+
+# License
+
+This repository is provided solely for academic and educational purposes.
+
+The source code, datasets, figures and report were developed as part of a University of Colombo coursework project.
+
+Please acknowledge the original authors if this repository is used for research or educational purposes.
