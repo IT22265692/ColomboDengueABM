@@ -5,17 +5,9 @@ An Agent-Based Model (ABM) developed in **AnyLogic 8.9.9 Personal Learning Editi
 This project evaluates how **human commuter mobility** and **historical weather conditions** influence dengue transmission using Monte Carlo simulation and parameter variation experiments.
 
 Developed for:
-
 **AM 4086 / AM 4039 / FM 4054 – Agent-Based Modeling**
-
-Department of Mathematics
-
+Department of Mathematics 
 University of Colombo
-
-Semester I – 2026
-
-Group 6
-
 ---
 
 # Research Questions
@@ -89,7 +81,7 @@ data/population.csv
 Weekly temperature and rainfall observations.
 
 ```
-data/weather_cleaned.csv
+data/temperature_and_rainfall_per_zone_weekly.csv
 ```
 
 ---
@@ -375,18 +367,7 @@ University of Colombo
 
 ---
 
-# Citation
-
-If you use this repository for academic purposes, please cite:
-
-> Group 6 (2026). *Colombo Dengue ABM: An Agent-Based Model of Dengue Transmission Driven by Human Commuter Mobility and Weather Conditions in Colombo District, Sri Lanka.* Department of Mathematics, University of Colombo.
-
----
-
 # License
 
 This repository is provided solely for academic and educational purposes.
-
 The source code, datasets, figures and report were developed as part of a University of Colombo coursework project.
-
-Please acknowledge the original authors if this repository is used for research or educational purposes.
